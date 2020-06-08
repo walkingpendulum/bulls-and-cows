@@ -58,7 +58,6 @@ def loop(
 ) -> Code:
     if ground_truth is None:
         ground_truth: Code = tuple(random.sample(alphabet, size))
-        print(ground_truth)
 
     all_codes: List[Code] = list(itertools.permutations(alphabet, size))
     restrictions: List[Tuple[Code, EvaluationResult]] = []
@@ -66,9 +65,24 @@ def loop(
     while len(permitted_codes) > 1:
         guess = ask_user(alphabet=alphabet, size=size, input_func=input_func)
         ev_result = evaluate(ground_truth=ground_truth, code=guess)
-        print(ev_result)
+        print(f"Bulls: {ev_result.bulls}. Cows: {ev_result.cows}.")
         restrictions.append((guess, ev_result))
         permitted_codes = list(restrict(restrictions=restrictions, codes=permitted_codes))
-        print(len(permitted_codes), permitted_codes)
+
+        codes_n = len(permitted_codes)
+        codes = ', '.join(''.join(c) for c in permitted_codes)
+        msg = [
+            f"Permitted codes number: {codes_n}. ",
+            # f"Codes: {codes}. ",
+        ]
+        print("".join(msg))
 
     return permitted_codes[0]
+
+
+if __name__ == '__main__':
+    try:
+        code = loop()
+        print(f"Code is {''.join(code)}.")
+    except KeyboardInterrupt:
+        print("\nGood bye!")
